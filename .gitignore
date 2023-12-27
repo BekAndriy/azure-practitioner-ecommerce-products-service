@@ -52,4 +52,6 @@ __azurite_db*__.json
 # Terraform
 .terraform
 .terraform.lock.hcl
+.terraform.*.lock.info
 terraform.tfstate
+terraform.tfstate.backup

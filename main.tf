@@ -65,7 +65,7 @@ resource "azurerm_windows_function_app" "products_service" {
     # Enable function invocations from Azure Portal.
     # Allow all origins for course purposes
     cors {
-      allowed_origins = var.env == "dev" ? ["*"] : ["https://portal.azure.com"]
+      allowed_origins = ["*"]
     }
 
     application_stack {
@@ -87,5 +87,63 @@ resource "azurerm_windows_function_app" "products_service" {
       tags["hidden-link: /app-insights-resource-id"],
       tags["hidden-link: /app-insights-conn-string"]
     ]
+  }
+}
+
+# Cosmos DB
+
+resource "azurerm_cosmosdb_account" "account_db_app" {
+  name                      = "dbacc${var.service_name}${var.env}"
+  location                  = var.deploy_location
+  resource_group_name       = azurerm_resource_group.product_service_rg.name
+  offer_type                = "Standard"
+  kind                      = "GlobalDocumentDB"
+  enable_automatic_failover = false
+  enable_free_tier          = true
+  geo_location {
+    location          = var.deploy_location
+    failover_priority = 0
+  }
+  consistency_policy {
+    consistency_level       = "BoundedStaleness"
+    max_interval_in_seconds = 300
+    max_staleness_prefix    = 100000
+  }
+  depends_on = [
+    azurerm_resource_group.product_service_rg
+  ]
+}
+
+resource "azurerm_cosmosdb_sql_database" "main" {
+  name                = "cosmosdb-sqldb-${var.service_name}-${var.env}"
+  resource_group_name = azurerm_resource_group.product_service_rg.name
+  account_name        = azurerm_cosmosdb_account.account_db_app.name
+}
+
+resource "azurerm_cosmosdb_sql_container" "products_container" {
+  name                = "products"
+  resource_group_name = azurerm_resource_group.product_service_rg.name
+  account_name        = azurerm_cosmosdb_account.account_db_app.name
+  database_name       = azurerm_cosmosdb_sql_database.main.name
+  partition_key_path  = "/id"
+
+  indexing_policy {
+    excluded_path {
+      path = "/*"
+    }
+  }
+}
+
+resource "azurerm_cosmosdb_sql_container" "stocks_container" {
+  name                = "stocks"
+  resource_group_name = azurerm_resource_group.product_service_rg.name
+  account_name        = azurerm_cosmosdb_account.account_db_app.name
+  database_name       = azurerm_cosmosdb_sql_database.main.name
+  partition_key_path  = "/product_id"
+
+  indexing_policy {
+    excluded_path {
+      path = "/*"
+    }
   }
 }
