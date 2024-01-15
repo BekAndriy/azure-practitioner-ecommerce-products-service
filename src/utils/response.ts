@@ -1,9 +1,19 @@
 import { HttpResponseInit } from "@azure/functions";
 
-export const errorResponse = (errorCode: number, message: string): HttpResponseInit => ({
+export const errorResponse = (message: string, errorCode: number = 400): HttpResponseInit => ({
   status: errorCode,
   body: message
 })
+
+export const errorJSONResponse = (body: object, errorCode: number = 400) => {
+  return {
+    status: errorCode,
+    body: JSON.stringify(body),
+    headers: {
+      'Content-type': 'application/json'
+    }
+  };
+}
 
 export const successJSONResponse = (body: object) => ({
   status: 200,
