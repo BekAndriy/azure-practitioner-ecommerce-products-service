@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const FUNCTION_APP_NAME = 'fa-productservice016-dev';
+const FUNCTION_APP_NAME = 'fa-msgs016-dev';
 const RESOURCE_GROUP_NAME = 'arg-productservice016-dev';
 
 const getEnvironmentVariables = () => {
