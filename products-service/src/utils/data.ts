@@ -1,3 +1,5 @@
+import type { AnyObjectSchema, ValidationError } from 'yup';
+
 export const parseStream = async <T extends object>(body: ReadableStream): Promise<T> => {
   const reader = body.getReader();
 
@@ -25,4 +27,12 @@ export const parseStream = async <T extends object>(body: ReadableStream): Promi
   const stringBody = await (new Response(stream, { headers: { "Content-Type": "text/html" } })
     .text());
   return JSON.parse(stringBody);
+}
+
+export const validateYupObj = <T extends object>(yupObjSchema: AnyObjectSchema, data: T) => {
+  return yupObjSchema.validate(data, { abortEarly: false })
+    .then(() => null)
+    .catch((error: ValidationError) => Object.fromEntries(
+      error.inner.map((error) => [error.path, error.message])
+    ))
 }

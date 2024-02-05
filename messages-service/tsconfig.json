@@ -9,11 +9,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "types": [
-      "jest",
       "node"
     ]
-  },
-  "exclude": [
-    "./jest.config.ts"
-  ]
+  }
 }

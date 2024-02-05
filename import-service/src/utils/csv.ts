@@ -4,7 +4,7 @@ const splitStringToRows = (inputData: string) => {
 
   // Remove any leading or trailing whitespace from each line.
   // Remove any empty lines.
-  lines = lines.map((line) => line.trim()).filter(Boolean);
+  lines = lines.map((line) => (line ?? '').trim()).filter(Boolean);
   return lines;
 }
 

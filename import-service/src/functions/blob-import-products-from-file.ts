@@ -2,7 +2,7 @@ import { app } from "@azure/functions";
 import { InvocationContext } from "@azure/functions";
 import { getDataFromRows, parseCSVContent } from '../utils/csv'
 import { moveBlobToDestinationContainer } from "../utils/files";
-
+import { sendBatchMessagesToQueue } from "../utils/serviceBus";
 
 export async function blobImportProductsFromFile(blob: Buffer, context: InvocationContext): Promise<void> {
   try {
@@ -15,8 +15,10 @@ export async function blobImportProductsFromFile(blob: Buffer, context: Invocati
     const contentStr = await blob.toString('utf-8');
     const rowsData = parseCSVContent(contentStr);
     const productsData = getDataFromRows(rowsData, logger);
-    context.log('CSV Data: ', productsData);
+
+    await sendBatchMessagesToQueue(productsData)
     await moveBlobToDestinationContainer(context.triggerMetadata.name as string, logger);
+
     context.log('Success');
   } catch (error) {
     context.log("Error on importing files: ", error);

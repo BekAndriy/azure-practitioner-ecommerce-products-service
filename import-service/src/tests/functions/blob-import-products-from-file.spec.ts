@@ -13,6 +13,7 @@ jest.mock('../../utils/files', () => ({
 import { type HttpRequest, type InvocationContext } from '@azure/functions';
 import { blobImportProductsFromFile } from '../../functions/blob-import-products-from-file';
 import * as filesService from '../../utils/files';
+import * as serviceBus from '../../utils/serviceBus';
 
 
 describe('blob-import-products-from-file', () => {
@@ -36,6 +37,7 @@ describe('blob-import-products-from-file', () => {
   it('should parse file successfully', async () => {
     const moveBlobToDestinationContainerSpy = jest.fn(() => Promise.resolve())
     jest.spyOn(filesService, 'moveBlobToDestinationContainer').mockImplementation(moveBlobToDestinationContainerSpy);
+    jest.spyOn(serviceBus, 'sendBatchMessagesToQueue').mockImplementation(jest.fn());
     const csvData = [['name', 'invalid name'], ['Some name']];
     const csvContent = csvData.map((row) => row.join(',')).join('\n');
     await blobImportProductsFromFile(getBufferFromString(csvContent), mockContext as InvocationContext);
