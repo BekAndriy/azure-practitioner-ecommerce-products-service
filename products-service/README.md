@@ -17,3 +17,13 @@ Deploy Function App to the server.
 ```
 npm run deploy:dev
 ```
+
+Insert ENV variables into the app functions configuration from the `.env` file
+
+```powershell
+# set new keys only
+npm run update:env
+
+# set and update keys
+npm run update:env -- -f
+```

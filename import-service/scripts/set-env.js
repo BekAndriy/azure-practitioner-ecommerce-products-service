@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const FUNCTION_APP_NAME = 'fa-productservice016-dev';
-const RESOURCE_GROUP_NAME = 'arg-productservice016-dev';
+const FUNCTION_APP_NAME = 'fa-importservice016-dev';
+const RESOURCE_GROUP_NAME = 'arg-importservice016-dev';
 
 const getEnvironmentVariables = () => {
   try {
@@ -52,5 +52,4 @@ const isForceExecution = () => process.argv.includes('-f') || process.argv.inclu
 
     console.log(`Setting ${key} ${variables[key] ? 'updated' : 'created'}.`)
   }
-
 })('.env')

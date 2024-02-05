@@ -3,26 +3,20 @@ import { v4 as uuidv4 } from 'uuid'
 import * as yup from 'yup';
 import { logParameters } from "../utils/logger";
 import { errorJSONResponse, errorResponse, successJSONResponse } from "../utils/response";
-import { Product } from "../models/Product";
-import { Stock } from "../models/Stock";
+import { Product, productValidationObj } from "../models/Product";
+import { Stock, stockValidationObj } from "../models/Stock";
 import { Client } from "../db";
-import { parseStream } from "../utils/data";
+import { parseStream, validateYupObj } from "../utils/data";
 
 type InputProductData = Omit<Product, 'id'> & Pick<Stock, 'count'>;
 
 const yupBodySchema = yup.object({
-  title: yup.string().min(3).max(255).trim().required(),
-  description: yup.string().trim().max(2000),
-  price: yup.number().min(0).required(),
-  count: yup.number()
+  ...productValidationObj,
+  ...stockValidationObj
 }).required();
 
 const validateBody = (body: InputProductData) => {
-  return yupBodySchema.validate(body, { abortEarly: false })
-    .then(() => null)
-    .catch((error: yup.ValidationError) => Object.fromEntries(
-      error.inner.map((error) => [error.path, error.message])
-    ))
+  return validateYupObj(yupBodySchema, body);
 }
 
 export const httpPostProduct = async (request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> => {

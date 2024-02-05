@@ -1,11 +1,11 @@
 {
-  "name": "products-service",
+  "name": "import-service",
   "version": "1.0.0",
   "description": "",
   "main": "dist/src/functions/*.js",
   "scripts": {
     "build": "tsc",
-    "deploy:dev": "func azure functionapp publish fa-productservice016-dev",
+    "deploy:dev": "func azure functionapp publish fa-importservice016-dev",
     "watch": "tsc -w",
     "clean": "rimraf dist",
     "prestart": "npm run clean && npm run build",
@@ -15,19 +15,16 @@
     "coverage": "jest --coverage"
   },
   "dependencies": {
-    "@azure/cosmos": "^4.0.0",
     "@azure/functions": "^4.0.0",
     "@azure/service-bus": "^7.9.3",
     "@azure/storage-blob": "^12.17.0",
     "@types/long": "^5.0.0",
-    "dotenv": "^16.3.1",
-    "uuid": "^9.0.1",
     "yup": "^1.3.3"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.23.3",
     "@types/jest": "^29.5.11",
-    "@types/node": "^18.19.8",
+    "@types/node": "18.x",
     "azure-functions-core-tools": "^4.x",
     "jest": "^29.7.0",
     "rimraf": "^5.0.0",
